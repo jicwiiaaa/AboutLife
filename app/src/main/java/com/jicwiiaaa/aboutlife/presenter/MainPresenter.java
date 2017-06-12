@@ -63,6 +63,7 @@ public class MainPresenter implements MainContract.Presenter {
                                     WeatherInfoModel weatherInfoModel = gson.fromJson(jsonContent.optString("" + i + ""), WeatherInfoModel.class);
                                     weatherInfoModels.add(weatherInfoModel);
                                 }
+
                                 view.showWeatherInfo(weatherInfoModels);
                             }else {
                                 ToastUtils.showShort(jsonData.optString("showapi_res_error"));
