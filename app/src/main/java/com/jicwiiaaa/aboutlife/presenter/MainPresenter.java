@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.Utils;
 import com.google.gson.Gson;
 import com.jicwiiaaa.aboutlife.contract.MainContract;
 import com.jicwiiaaa.aboutlife.helper.SysCons;
+import com.jicwiiaaa.aboutlife.model.BannerPic;
 import com.jicwiiaaa.aboutlife.model.WeatherInfoModel;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -42,12 +43,11 @@ public class MainPresenter implements MainContract.Presenter {
     public void getWeatherInfo() {
         //做业务请求
         LogUtils.d("getWeatherInf");
-
-        OkGo.get("http://route.showapi.com/819-1")
+        OkGo.get("http://route.showapi.com/197-1")
                 .tag(this)
                 .params("showapi_appid", SysCons.SHOWAPI_APPID)
                 .params("showapi_sign", SysCons.SHOWAPI_SECRET)
-                .params("type", 35)
+                .params("rand", 1)
                 .params("num", DEFAULT_NUM)
                 .params("page", 1)
                 .execute(new StringCallback() {
@@ -58,13 +58,51 @@ public class MainPresenter implements MainContract.Presenter {
                             Gson gson = new Gson();
                             if (jsonData.optInt("showapi_res_code") == 0) {
                                 List<WeatherInfoModel> weatherInfoModels = new ArrayList<WeatherInfoModel>();
-                                JSONObject jsonContent = jsonData.getJSONObject("showapi_res_body");
-                                for (int i = 0; i < DEFAULT_NUM; i++) {
-                                    WeatherInfoModel weatherInfoModel = gson.fromJson(jsonContent.optString("" + i + ""), WeatherInfoModel.class);
+                                JSONArray arrayData = jsonData.getJSONObject("showapi_res_body").optJSONArray("newslist");
+                                for (int i = 0; i < arrayData.length(); i++) {
+                                    WeatherInfoModel weatherInfoModel = gson.fromJson(arrayData.getJSONObject(i).toString(), WeatherInfoModel.class);
                                     weatherInfoModels.add(weatherInfoModel);
                                 }
 
                                 view.showWeatherInfo(weatherInfoModels);
+                            }else {
+                                ToastUtils.showShort(jsonData.optString("showapi_res_error"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                    }
+                });
+
+    }
+
+    @Override
+    public void getBannerPic() {
+        OkGo.get("http://route.showapi.com/1377-1")
+                .tag(this)
+                .params("showapi_appid", SysCons.SHOWAPI_APPID)
+                .params("showapi_sign", SysCons.SHOWAPI_SECRET)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonData = new JSONObject(s);
+                            Gson gson = new Gson();
+                            if (jsonData.optInt("showapi_res_code") == 0) {
+                                List<BannerPic> bannerPics = new ArrayList<BannerPic>();
+                                JSONArray arrayData = jsonData.getJSONObject("showapi_res_body").optJSONArray("list");
+                                for (int i = 0; i < arrayData.length(); i++) {
+                                    BannerPic bannerPic = gson.fromJson(arrayData.getJSONObject(i).toString(), BannerPic.class);
+                                    bannerPics.add(bannerPic);
+                                }
+
+                                view.showBannerPic(bannerPics);
                             }else {
                                 ToastUtils.showShort(jsonData.optString("showapi_res_error"));
                             }

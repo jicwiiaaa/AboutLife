@@ -1,5 +1,6 @@
 package com.jicwiiaaa.aboutlife.contract;
 
+import com.jicwiiaaa.aboutlife.model.BannerPic;
 import com.jicwiiaaa.aboutlife.model.WeatherInfoModel;
 import com.jicwiiaaa.aboutlife.presenter.BasePresenter;
 
@@ -15,10 +16,14 @@ public interface MainContract {
 
     interface View extends BaseView<Presenter> {
         void showWeatherInfo(List<WeatherInfoModel> weatherInfoModels);
+
+        void showBannerPic(List<BannerPic> bannerPics);
     }
 
     interface Presenter extends BasePresenter {
         void getWeatherInfo();
+
+        void getBannerPic();
 
     }
 }

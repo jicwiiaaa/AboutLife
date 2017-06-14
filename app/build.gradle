@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.jicwiiaaa.aboutlife"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -27,15 +27,18 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:customtabs:25.3.1'
     testCompile 'junit:junit:4.12'
 
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile 'com.github.bumptech.glide:glide:4.0.0-RC0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'jp.wasabeef:glide-transformations:2.0.1'
     compile 'com.blankj:utilcode:1.6.4'
-    compile 'com.jaeger.statusbarutil:library:1.4.0'
     compile 'com.lzy.net:okgo:2.1.4'//https://github.com/jicwiiaaa/okhttp-OkGo
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.github.pinguo-zhouwei:MZBannerView:v1.1.0'
+    compile 'org.byteam.superadapter:superadapter:3.6.7'//https://github.com/byteam/SuperAdapter
 }
