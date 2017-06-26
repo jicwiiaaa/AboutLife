@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.jicwiiaaa.aboutlife.contract.MainContract;
 import com.jicwiiaaa.aboutlife.helper.SysCons;
 import com.jicwiiaaa.aboutlife.model.BannerPic;
+import com.jicwiiaaa.aboutlife.model.FunnyInfo;
 import com.jicwiiaaa.aboutlife.model.WeatherInfoModel;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -103,6 +104,46 @@ public class MainPresenter implements MainContract.Presenter {
                                 }
 
                                 view.showBannerPic(bannerPics);
+                            }else {
+                                ToastUtils.showShort(jsonData.optString("showapi_res_error"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        super.onError(call, response, e);
+                    }
+                });
+    }
+
+    @Override
+    public void getFunnyInfos(int page) {
+        OkGo.get("http://route.showapi.com/255-1")
+                .tag(this)
+                .params("showapi_appid", SysCons.SHOWAPI_APPID)
+                .params("showapi_sign", SysCons.SHOWAPI_SECRET)
+                .params("type", 10)
+                .params("page", page)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        try {
+                            JSONObject jsonData = new JSONObject(s);
+                            Gson gson = new Gson();
+                            if (jsonData.optInt("showapi_res_code") == 0) {
+                                List<FunnyInfo> funnyInfos = new ArrayList<FunnyInfo>();
+                                JSONArray arrayData = jsonData.getJSONObject("showapi_res_body").optJSONObject("pagebean").optJSONArray("contentlist");
+                                for (int i = 0; i < arrayData.length(); i++) {
+                                    FunnyInfo funnyInfo = gson.fromJson(arrayData.getJSONObject(i).toString(), FunnyInfo.class);
+                                    funnyInfos.add(funnyInfo);
+                                }
+
+                                view.showFunnyInfos(funnyInfos);
+
                             }else {
                                 ToastUtils.showShort(jsonData.optString("showapi_res_error"));
                             }

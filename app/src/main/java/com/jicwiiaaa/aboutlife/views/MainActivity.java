@@ -1,13 +1,12 @@
 package com.jicwiiaaa.aboutlife.views;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,8 +18,10 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.jicwiiaaa.aboutlife.R;
+import com.jicwiiaaa.aboutlife.adapter.FunnyInfoAdapter;
 import com.jicwiiaaa.aboutlife.contract.MainContract;
 import com.jicwiiaaa.aboutlife.model.BannerPic;
+import com.jicwiiaaa.aboutlife.model.FunnyInfo;
 import com.jicwiiaaa.aboutlife.model.WeatherInfoModel;
 import com.jicwiiaaa.aboutlife.presenter.MainPresenter;
 import com.zhouwei.mzbanner.MZBannerView;
@@ -40,10 +41,13 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     MZBannerView banner;
     @BindView(R.id.img_bg_banner)
     ImageView imgBgBanner;
+    @BindView(R.id.rv_funny)
+    RecyclerView rvFunny;
     private MainPresenter mainPresenter;
 
     private List<WeatherInfoModel> weatherInfoModels = new ArrayList<>();
     private List<BannerPic> bannerPics = new ArrayList<>();
+    private FunnyInfoAdapter funnyInfoAdapter;
 
     private int basePosition = 0;//banner开源项目在滑动时，position异常，需添加一个basePosition
 
@@ -67,6 +71,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         mainPresenter = new MainPresenter(this);
 //        mainPresenter.getWeatherInfo();
         mainPresenter.getBannerPic();
+        mainPresenter.getFunnyInfos(1);
 
         initViews();
         initListener();
@@ -75,7 +80,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     private void initViews() {
         Glide.with(this)
                 .load(R.mipmap.bg_default_city)
-                
+
                 .bitmapTransform(new BlurTransformation(this, 22, 3))// “12”：设置模糊度(在0.0到25.0之间)，默认”25";"4":图片缩放比例,默认“1”。
                 .into(imgBgBanner);
     }
@@ -96,7 +101,7 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                 Glide.with(MainActivity.this)
                         .load(bannerPics.get((position + bannerPics.size() - basePosition) % bannerPics.size()).getPic())
                         .placeholder(R.mipmap.bg_default_city)
-                        
+
                         .bitmapTransform(new BlurTransformation(MainActivity.this, 22, 3))// “12”：设置模糊度(在0.0到25.0之间)，默认”25";"4":图片缩放比例,默认“1”。
                         .into(imgBgBanner);
                 LogUtils.d("onPageSelected");
@@ -185,6 +190,13 @@ public class MainActivity extends BaseActivity implements MainContract.View {
                 return new BannerViewHolder();
             }
         });
+    }
+
+    @Override
+    public void showFunnyInfos(List<FunnyInfo> funnyInfos) {
+        rvFunny.setLayoutManager(new LinearLayoutManager(this));
+        funnyInfoAdapter = new FunnyInfoAdapter(this, funnyInfos, null);
+        rvFunny.setAdapter(funnyInfoAdapter);
     }
 
     public static class BannerViewHolder implements MZViewHolder<BannerPic> {
