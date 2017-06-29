@@ -22,6 +22,8 @@ import com.jicwiiaaa.aboutlife.helper.common.SystemBarTintManager;
 
 public class BaseActivity extends AppCompatActivity {
 
+    
+
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
